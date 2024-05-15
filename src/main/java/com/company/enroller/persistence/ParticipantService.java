@@ -4,6 +4,8 @@ import java.util.Collection;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.company.enroller.model.Participant;
@@ -30,6 +32,9 @@ public class ParticipantService {
 	public void add(Participant participant) {
 		Session session = connector.getSession();
 		Transaction transaction = session.beginTransaction();
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncoder.encode(participant.getPassword());
+		participant.setPassword(hashedPassword);
 		connector.getSession().save(participant);
 		transaction.commit();
 	}
